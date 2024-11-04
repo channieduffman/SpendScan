@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 input_file [output_file]"
+  exit 1
+fi
+
+if [ ! -f "$HOME/bin/prepcsv.sed" ]; then
+  echo "Error: sed script $HOME/bin/prepcsv.sed not found"
+  exit 1
+fi
+
+if [ -z "$2" ]; then
+  sed -f "$HOME/bin/prepcsv.sed" "$1" 
+else 
+  if [ -f "$HOME/statements/$2" ]; then
+    read -p "Warning: $HOME/statements/$2 exists; overwrite? (y/n): " overwrite
+    case "$overwrite" in
+    "y")
+      rm "$HOME/statements/$2"
+      sed -f "$HOME/bin/prepcsv.sed" "$1" > "$HOME/statements/$2"
+      echo "$HOME/statements/$2: overwritten"
+      ;;
+    *)
+      echo "$HOME/statements/$2: not overwritten"
+      exit 1
+      ;;
+    esac
+  else
+    mkdir -p "$HOME/statements"
+    sed -f "$HOME/bin/prepcsv.sed" "$1" > "$HOME/statements/$2"
+  fi
+fi
