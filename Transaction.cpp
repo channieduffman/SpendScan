@@ -1,3 +1,4 @@
+#include <string>
 #include "Transaction.h"
 
 /* Constructors */
@@ -23,7 +24,21 @@ TransType Transaction::get_type() const { return type; }
 /* Modifier Methods for `type` Attribute */
 
 TransType Transaction::Analyze() {
-  return UNDEFINED;
+  TransType t = UNDEFINED;
+
+  if (description.contains("Purchase")) {
+    t = EXPENSE;
+  } else if (description.contains("Withdrawal")) {
+    if (description.contains("STASH") || description.contains("BETTERMENT")) {
+      t = SAVINGS;
+    } else {
+      t = EXPENSE;
+    }
+  } else if (description.contains("Deposit")) {
+    t = INCOME;
+  }
+
+  return t;
 }
 
 void Transaction::Categorize() {

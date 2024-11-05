@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
-
+#include <memory>
+#include <string>
 #include <sys/ioctl.h>
 #include <unistd.h>
 
@@ -54,10 +55,11 @@ void PrintRow(const std::string &u,
  * s: deque of savings transactions
  *
  */
-void Print(std::deque<Transaction*> &u,
-           std::deque<Transaction*> &i,
-           std::deque<Transaction*> &e,
-           std::deque<Transaction*> &s) 
+void Print(std::deque<std::shared_ptr<Transaction>> &u,
+           std::deque<std::shared_ptr<Transaction>> &i,
+           std::deque<std::shared_ptr<Transaction>> &e,
+           std::deque<std::shared_ptr<Transaction>> &s,
+           std::vector<float> &t) 
 {
 
   // Get terminal width and set field width
@@ -81,28 +83,28 @@ void Print(std::deque<Transaction*> &u,
 
     // Check for undefined values
     if (!u.empty()) {
-      Transaction *t = u.front();
+      std::shared_ptr<Transaction> t = u.front();
       u_val = std::to_string(t->get_amount());
       u.pop_front();
     } else { u_val = ""; }
 
     // Check for income values
     if (!i.empty()) {
-      Transaction *t = i.front();
+      std::shared_ptr<Transaction> t = i.front();
       i_val = std::to_string(t->get_amount());
       i.pop_front();
     } else { i_val = ""; }
 
     // Check for expense values
     if (!e.empty()) {
-      Transaction *t = e.front();
+      std::shared_ptr<Transaction> t = e.front();
       e_val = std::to_string(t->get_amount());
       e.pop_front();
     } else { e_val = ""; }
 
     // Check for savings values
     if (!s.empty()) {
-      Transaction *t = s.front();
+      std::shared_ptr<Transaction> t = s.front();
       s_val = std::to_string(t->get_amount());
       s.pop_front();
     } else { s_val = ""; }
@@ -111,5 +113,7 @@ void Print(std::deque<Transaction*> &u,
   }
 
   Line(w.ws_col, TOP_BOT_BORDER); 
+  PrintRow(std::to_string(t[0]), std::to_string(t[1]), std::to_string(t[2]), std::to_string(t[3]), col_width);
+  Line(w.ws_col, TOP_BOT_BORDER);
 }
 

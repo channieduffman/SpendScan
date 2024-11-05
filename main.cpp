@@ -3,25 +3,26 @@
 #include <deque>
 #include <string>
 #include <sstream>
+#include <memory>
 
 #include "Transaction.h"
 #include "FieldsError.h"
 #include "Print.h"
 
 
-void SortTransactions(std::deque<Transaction*>&, 
-                      std::deque<Transaction*>&,
-                      std::deque<Transaction*>&,
-                      std::deque<Transaction*>&,
+void SortTransactions(std::deque<std::shared_ptr<Transaction>>&, 
+                      std::deque<std::shared_ptr<Transaction>>&,
+                      std::deque<std::shared_ptr<Transaction>>&,
+                      std::deque<std::shared_ptr<Transaction>>&,
                       std::vector<float>&);
 
 int main(int argc, char *argv[]) {
 
   // Initialize empty vectors of Transaction pointers
-  std::deque<Transaction*> undefined;
-  std::deque<Transaction*> income;
-  std::deque<Transaction*> expense;
-  std::deque<Transaction*> savings;
+  std::deque<std::shared_ptr<Transaction>> undefined;
+  std::deque<std::shared_ptr<Transaction>> income;
+  std::deque<std::shared_ptr<Transaction>> expense;
+  std::deque<std::shared_ptr<Transaction>> savings;
 
   // Initialize each total to 0
   std::vector<float> totals(4, 0);
@@ -36,7 +37,7 @@ int main(int argc, char *argv[]) {
     e.Message();  
   }
 
-  Print(undefined, income, expense, savings);
+  Print(undefined, income, expense, savings, totals);
 
   return 0;
 }
@@ -45,18 +46,18 @@ int main(int argc, char *argv[]) {
 /*
  * Parses CSV file of transactions and sorts them into correct vectors
  *
- * u: vector of undefined transactions
- * i: vector of income transactions
- * e: vector of expense transactions
- * s: vector of savings transactions
+ * u: deque of undefined transactions
+ * i: deque of income transactions
+ * e: deque of expense transactions
+ * s: deque of savings transactions
  * t: vector of total values
  *
  */
-void SortTransactions(std::deque<Transaction*> &u, 
-                      std::deque<Transaction*> &i,
-                      std::deque<Transaction*> &e,
-                      std::deque<Transaction*> &s,
-                      std::vector<float> &t) 
+void SortTransactions(std::deque<std::shared_ptr<Transaction>> &u, 
+                      std::deque<std::shared_ptr<Transaction>> &i,
+                      std::deque<std::shared_ptr<Transaction>> &e,
+                      std::deque<std::shared_ptr<Transaction>> &s,
+                      std::vector<float> &t)
 {
   const int expected_fields = 4;
 
@@ -75,10 +76,10 @@ void SortTransactions(std::deque<Transaction*> &u,
     // Expected fields: description, date, amount, end_balance
     if (fields.size() != expected_fields) { throw FieldsError(expected_fields, fields.size()); }
 
-    Transaction *trans = new Transaction(fields[0], 
-                                         fields[1], 
-                                         std::stof(fields[2]), 
-                                         std::stof(fields[3]));    
+    std::shared_ptr<Transaction> trans = std::make_shared<Transaction>(fields[0], 
+                                                                       fields[1], 
+                                                                       std::stof(fields[2]), 
+                                                                       std::stof(fields[3]));    
 
     trans->Categorize();
 

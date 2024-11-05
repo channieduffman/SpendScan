@@ -1,5 +1,5 @@
 CXX = g++
-CXXVERSION = -std=c++17
+CXXVERSION = -std=c++2b
 CXXFLAGS = -Wall -g
 
 OBJS = main.o Transaction.o FieldsError.o Print.o

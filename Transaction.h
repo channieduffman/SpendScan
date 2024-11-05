@@ -29,8 +29,6 @@ public:
   TransType get_type() const;
   
   void Categorize();
-
-  ~Transaction();
 };
 
 #endif
