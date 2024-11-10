@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <memory>
 #include <string>
+#include <sstream>
 #include <sys/ioctl.h>
 #include <unistd.h>
 
@@ -24,6 +25,7 @@ void Line(int width, char fill) {
   std::cout << '\n';
 }
 
+
 /*
  * Prints a row of transaction data
  *
@@ -45,6 +47,7 @@ void PrintRow(const std::string &u,
   std::cout << SIDE_BORDER << " " << std::setw(col_width) << std::left << e;
   std::cout << SIDE_BORDER << " " << std::setw(col_width) << std::left << s << SIDE_BORDER << std::endl;
 }
+
 
 /*
  * Prints a table of transactions to the terminal
@@ -69,51 +72,42 @@ void Print(std::deque<std::shared_ptr<Transaction>> &u,
   // Column width; - 2 to account for border and padding
   int col_width = (w.ws_col / 4) - 2;
 
-  /* Print Header */
-
+  // Print Header 
   Line(w.ws_col, TOP_BOT_BORDER); 
   PrintRow("Undefined", "Income", "Expense", "Savings", col_width);
   Line(w.ws_col, TOP_BOT_BORDER); 
 
-  /* Print Values */
-
+  // Print Values
   while (!u.empty() || !i.empty() || !e.empty() || !s.empty()) {
     
     std::string u_val, i_val, e_val, s_val; 
 
-    // Check for undefined values
-    if (!u.empty()) {
-      std::shared_ptr<Transaction> t = u.front();
-      u_val = std::to_string(t->get_amount());
-      u.pop_front();
-    } else { u_val = ""; }
-
-    // Check for income values
-    if (!i.empty()) {
-      std::shared_ptr<Transaction> t = i.front();
-      i_val = std::to_string(t->get_amount());
-      i.pop_front();
-    } else { i_val = ""; }
-
-    // Check for expense values
-    if (!e.empty()) {
-      std::shared_ptr<Transaction> t = e.front();
-      e_val = std::to_string(t->get_amount());
-      e.pop_front();
-    } else { e_val = ""; }
-
-    // Check for savings values
-    if (!s.empty()) {
-      std::shared_ptr<Transaction> t = s.front();
-      s_val = std::to_string(t->get_amount());
-      s.pop_front();
-    } else { s_val = ""; }
+    SetValues(u, u_val);
+    SetValues(i, i_val);
+    SetValues(e, e_val);
+    SetValues(s, s_val);
 
     PrintRow(u_val, i_val, e_val, s_val, col_width);
   }
 
+  // Print totals
   Line(w.ws_col, TOP_BOT_BORDER); 
   PrintRow(std::to_string(t[0]), std::to_string(t[1]), std::to_string(t[2]), std::to_string(t[3]), col_width);
   Line(w.ws_col, TOP_BOT_BORDER);
 }
 
+
+/*
+ * Set row values to print
+ *
+ * dq: a deque of Transactions
+ * val: a string in which to store the top value of dq
+ *
+ */
+void SetValues(std::deque<std::shared_ptr<Transaction>> &dq, std::string &val) {
+  if (!dq.empty()) {
+    std::shared_ptr<Transaction> t = dq.front();
+    val = std::to_string(t->get_amount());
+    dq.pop_front();
+  } else { val = ""; }
+}

@@ -1,3 +1,4 @@
+#include <iomanip>
 #include <iostream>
 #include <vector>
 #include <deque>
@@ -33,11 +34,10 @@ int main(int argc, char *argv[]) {
 
   try {
     SortTransactions(undefined, income, expense, savings, totals);
+    Print(undefined, income, expense, savings, totals);
   } catch (FieldsError e) {
     e.Message();  
   }
-
-  Print(undefined, income, expense, savings, totals);
 
   return 0;
 }
@@ -78,8 +78,8 @@ void SortTransactions(std::deque<std::shared_ptr<Transaction>> &u,
 
     std::shared_ptr<Transaction> trans = std::make_shared<Transaction>(fields[0], 
                                                                        fields[1], 
-                                                                       std::stof(fields[2]), 
-                                                                       std::stof(fields[3]));    
+                                                                       std::stof(fields[2]),
+                                                                       std::stof(fields[3]));
 
     trans->Categorize();
 
