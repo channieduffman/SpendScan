@@ -1,13 +1,12 @@
 #include <iostream>
 #include <iomanip>
 #include <memory>
-#include <optional>
 #include <string>
 #include <sys/ioctl.h>
 #include <unistd.h>
 
 #include "Print.h"
-#include "Types.h"
+#include "Types.h" // ExtractTypeString()
 
 
 /*
