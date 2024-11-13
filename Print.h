@@ -21,10 +21,12 @@ void Line(int, char);
 
 template <typename T>
 void PrintRow(std::vector<T> &values, int col_width) {
-  for (auto value : values) {
+  for (T value : values) {
     std::cout << SIDE_BORDER << " " << std::setw(col_width) << std::left << value;
   }
   std::cout << SIDE_BORDER << std::endl;
 }
+
+void PrintDouble(std::vector<double> &values, int col_width);
 
 #endif

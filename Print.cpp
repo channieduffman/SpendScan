@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <memory>
+#include <optional>
 #include <string>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -9,7 +10,13 @@
 #include "Types.h"
 
 
-
+/*
+ * Prints a table of transaction values to the terminal
+ *
+ * types:  a vector of deques of transactions
+ * totals: total values for each column
+ *
+ */
 void Print(std::vector<std::deque<std::shared_ptr<Transaction>>> &types,
              std::vector<double> &totals)
 {
@@ -43,30 +50,36 @@ void Print(std::vector<std::deque<std::shared_ptr<Transaction>>> &types,
       }
     }
     if (!more_vals) { break; }
-    std::vector<std::string> row_vals;
+    std::vector<double> row_vals;
     for (int i = 0; i < types.size(); i++) {
       if (!types[i].empty()) {
         std::shared_ptr<Transaction> t = types[i].front();
-        row_vals.push_back(std::to_string(t->get_amount()));
+        row_vals.push_back(t->get_amount());
         types[i].pop_front();
       } else {
-        row_vals.push_back("");
+        row_vals.push_back(0.0);
       }
     }
-    PrintRow(row_vals, col_width);
+    PrintDouble(row_vals, col_width);
   } while (more_vals);
 
   // Print totals
   
   Line(w.ws_col, TOP_BOT_BORDER);
-  PrintRow(totals, col_width);
+  PrintDouble(totals, col_width);
+  Line(w.ws_col, TOP_BOT_BORDER);
+
+  // Print gross
+
+  std::cout << SIDE_BORDER << " Gross Income:\t" << totals[INCOME] << std::endl;
+
+  // Print net
+
+  double net = totals[INCOME] - totals[EXPENSE] + totals[OFFSET];
+  std::cout << SIDE_BORDER << " Net Income:\t" << net << std::endl;
+
   Line(w.ws_col, TOP_BOT_BORDER);
 }
-
-
-/*********************/
-/* Utility Functions */
-/*********************/
 
 
 /* 
@@ -83,3 +96,13 @@ void Line(int width, char fill) {
   std::cout << '\n';
 }
 
+void PrintDouble(std::vector<double> &values, int col_width) {
+  for (auto value : values) {
+    if (value > 0) {
+      std::cout << SIDE_BORDER << " " << std::setw(col_width) << std::right << std::fixed << std::setprecision(2) << value;
+    } else {
+      std::cout << SIDE_BORDER << " " << std::setw(col_width) << "";
+    }
+  }
+  std::cout << SIDE_BORDER << std::endl;
+}
