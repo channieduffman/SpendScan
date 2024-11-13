@@ -1,30 +1,27 @@
+SRC_DIR := src
+OBJ_DIR := obj
+BIN_DIR := .
+
+EXE := $(BIN_DIR)/spendscan
+SRC := $(wildcard $(SRC_DIR)/*.cpp)
+OBJ := $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+
 CXX = g++
 CXXVERSION = -std=c++2b
 CXXFLAGS = -Wall -g
 
-OBJS = main.o Transaction.o FieldsError.o Print.o Types.o
+.PHONY: all clean
 
-spendscan: $(OBJS)
-	$(CXX) $(CXXVERSION) $(CXXFLAGS) -o spendscan $(OBJS)
+all: $(EXE)
 
+$(EXE): $(OBJ)
+	$(CXX) $(CXXVERSION) $(CXXFLAGS) $^ -o $@
 
-main.o: main.cpp Transaction.h FieldsError.h Print.h
-	$(CXX) $(CXXVERSION) $(CXXFLAGS) -c main.cpp
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
+	$(CXX) $(CXXVERSION) $(CXXFLAGS) -c $< -o $@
 
-
-Transaction.o: Transaction.cpp Transaction.h
-	$(CXX) $(CXXVERSION) $(CXXFLAGS) -c Transaction.cpp
-
-
-FieldsError.o: FieldsError.cpp FieldsError.h
-	$(CXX) $(CXXVERSION) $(CXXFLAGS) -c FieldsError.cpp
-
-
-Print.o: Print.cpp Print.h
-	$(CXX) $(CXXVERSION) $(CXXFLAGS) -c Print.cpp
-
-Types.o: Types.cpp Types.h
-	$(CXX) $(CXXVERSION) $(CXXFLAGS) -c Types.cpp
+$(OBJ_DIR):
+	mkdir -p $@
 
 clean:
-	rm -f *.o spendscan
+	rm -rv $(OBJ_DIR) $(EXE)

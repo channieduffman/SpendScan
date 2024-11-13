@@ -17,7 +17,7 @@
  * totals: total values for each column
  *
  */
-void Print(std::vector<std::deque<std::shared_ptr<Transaction>>> &types,
+void Print(std::vector<std::deque<std::shared_ptr<Transaction> > > &types,
              std::vector<double> &totals)
 {
   const int col_count = types.size();

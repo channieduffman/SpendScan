@@ -13,9 +13,9 @@
 const char SIDE_BORDER = '|';
 const char TOP_BOT_BORDER = '-';
 
-void Print(std::vector<std::deque<std::shared_ptr<Transaction>>>&, std::vector<double>&);
+void Print(std::vector<std::deque<std::shared_ptr<Transaction> > >&, std::vector<double>&);
 
-void SetValues(std::deque<std::shared_ptr<Transaction>>&, std::string&);
+void SetValues(std::deque<std::shared_ptr<Transaction> >&, std::string&);
 
 void Line(int, char);
 

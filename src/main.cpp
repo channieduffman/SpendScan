@@ -11,13 +11,13 @@
 #include "Types.h"
 
 
-void SortTransactions(std::vector<std::deque<std::shared_ptr<Transaction>>>&,
+void SortTransactions(std::vector<std::deque<std::shared_ptr<Transaction> > >&,
                       std::vector<double>&);
 
 
 int main(int argc, char *argv[]) {
   const int num_columns = NumTypes();
-  std::vector<std::deque<std::shared_ptr<Transaction>>> types(num_columns);
+  std::vector<std::deque<std::shared_ptr<Transaction> > > types(num_columns);
 
   // Initialize each total to 0
   std::vector<double> totals(num_columns, 0.0);
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
  * totals: a vector of doubles representing totals
  *
  */
-void SortTransactions(std::vector<std::deque<std::shared_ptr<Transaction>>> &types,
+void SortTransactions(std::vector<std::deque<std::shared_ptr<Transaction> > > &types,
                       std::vector<double> &totals) 
 {
   const int expected_fields = 4;
