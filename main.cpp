@@ -1,4 +1,3 @@
-#include <iomanip>
 #include <iostream>
 #include <vector>
 #include <deque>
@@ -11,30 +10,25 @@
 #include "Print.h"
 
 
-void SortTransactions(std::deque<std::shared_ptr<Transaction>>&, 
-                      std::deque<std::shared_ptr<Transaction>>&,
-                      std::deque<std::shared_ptr<Transaction>>&,
-                      std::deque<std::shared_ptr<Transaction>>&,
-                      std::vector<float>&);
+void SortTransactions(std::vector<std::deque<std::shared_ptr<Transaction>>>&,
+                      std::vector<double>&);
 
 int main(int argc, char *argv[]) {
 
-  // Initialize empty vectors of Transaction pointers
-  std::deque<std::shared_ptr<Transaction>> undefined;
-  std::deque<std::shared_ptr<Transaction>> income;
-  std::deque<std::shared_ptr<Transaction>> expense;
-  std::deque<std::shared_ptr<Transaction>> savings;
+  const int num_columns = 5;
+
+  std::vector<std::deque<std::shared_ptr<Transaction>>> types(num_columns);
 
   // Initialize each total to 0
-  std::vector<float> totals(4, 0);
+  std::vector<double> totals(num_columns, 0.0);
 
   // Advance past first line - optimize this? - simply remove the heading from CSV
   std::string header;
   std::getline(std::cin, header);
 
   try {
-    SortTransactions(undefined, income, expense, savings, totals);
-    Print(undefined, income, expense, savings, totals);
+    SortTransactions(types, totals);
+    Print(types, totals);
   } catch (FieldsError e) {
     e.Message();  
   }
@@ -44,20 +38,14 @@ int main(int argc, char *argv[]) {
 
 
 /*
- * Parses CSV file of transactions and sorts them into correct vectors
+ * Sorts transactions into income, expense, etc.
  *
- * u: deque of undefined transactions
- * i: deque of income transactions
- * e: deque of expense transactions
- * s: deque of savings transactions
- * t: vector of total values
+ * types:  a vector of deques of shared pointers to Transactions
+ * totals: a vector of doubles representing totals
  *
  */
-void SortTransactions(std::deque<std::shared_ptr<Transaction>> &u, 
-                      std::deque<std::shared_ptr<Transaction>> &i,
-                      std::deque<std::shared_ptr<Transaction>> &e,
-                      std::deque<std::shared_ptr<Transaction>> &s,
-                      std::vector<float> &t)
+void SortTransactions(std::vector<std::deque<std::shared_ptr<Transaction>>> &types,
+                      std::vector<double> &totals) 
 {
   const int expected_fields = 4;
 
@@ -87,17 +75,20 @@ void SortTransactions(std::deque<std::shared_ptr<Transaction>> &u,
     
     // Accumulate totals
     if (tType == UNDEFINED) {
-      t[UNDEFINED] += trans->get_amount();
-      u.push_back(trans);
+      totals[UNDEFINED] += trans->get_amount();
+      types[UNDEFINED].push_back(trans);
     } else if (tType == INCOME) {
-      t[INCOME] += trans->get_amount();
-      i.push_back(trans);
+      totals[INCOME] += trans->get_amount();
+      types[INCOME].push_back(trans);
     } else if (tType == EXPENSE) {
-      t[EXPENSE] += trans->get_amount();
-      e.push_back(trans);
+      totals[EXPENSE] += trans->get_amount();
+      types[EXPENSE].push_back(trans);
     } else if (tType == SAVINGS) {
-      t[SAVINGS] += trans->get_amount(); 
-      s.push_back(trans);
+      totals[SAVINGS] += trans->get_amount(); 
+      types[SAVINGS].push_back(trans);
+    } else if (tType == OFFSET) {
+      totals[OFFSET] += trans->get_amount();
+      types[OFFSET].push_back(trans);
     }
   }
 }

@@ -2,7 +2,7 @@ CXX = g++
 CXXVERSION = -std=c++2b
 CXXFLAGS = -Wall -g
 
-OBJS = main.o Transaction.o FieldsError.o Print.o
+OBJS = main.o Transaction.o FieldsError.o Print.o Types.o
 
 spendscan: $(OBJS)
 	$(CXX) $(CXXVERSION) $(CXXFLAGS) -o spendscan $(OBJS)
@@ -23,6 +23,8 @@ FieldsError.o: FieldsError.cpp FieldsError.h
 Print.o: Print.cpp Print.h
 	$(CXX) $(CXXVERSION) $(CXXFLAGS) -c Print.cpp
 
+Types.o: Types.cpp Types.h
+	$(CXX) $(CXXVERSION) $(CXXFLAGS) -c Types.cpp
 
 clean:
 	rm -f *.o spendscan

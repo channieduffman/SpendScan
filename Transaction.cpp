@@ -6,7 +6,7 @@
 Transaction::Transaction() : description(""), date(""), amount(0.0), end_balance(0.0) { }
 
 Transaction::Transaction(
-  std::string m_description, std::string m_date, float m_amount, float m_end_balance
+  std::string m_description, std::string m_date, double m_amount, double m_end_balance
 ) : description(m_description), date(m_date), amount(m_amount), end_balance(m_end_balance) { }
 
 
@@ -14,9 +14,9 @@ Transaction::Transaction(
 
 std::string Transaction::get_description() const { return description; }
 
-float Transaction::get_amount() const { return amount; }
+double Transaction::get_amount() const { return amount; }
 
-float Transaction::get_end_balance() const { return end_balance; }
+double Transaction::get_end_balance() const { return end_balance; }
 
 TransType Transaction::get_type() const { return type; }
 
@@ -35,7 +35,11 @@ TransType Transaction::Analyze() {
       t = EXPENSE;
     }
   } else if (description.contains("Deposit")) {
-    t = INCOME;
+    if (description.contains("VENMO")) {
+      t = OFFSET;
+    } else {
+      t = INCOME;
+    }
   }
 
   return t;
